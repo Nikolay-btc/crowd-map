@@ -1,0 +1,17 @@
+﻿{
+  "v1": [
+    {"id":"u1","name":"Аня","photo":"https://i.pravatar.cc/100?img=47","sticker":"знакомства"},
+    {"id":"u2","name":"Игорь","photo":"https://i.pravatar.cc/100?img=12","sticker":"танцы"}
+  ],
+  "v2": [
+    {"id":"u3","name":"Марина","photo":"https://i.pravatar.cc/100?img=68","sticker":"напиться"},
+    {"id":"u4","name":"Влад","photo":"https://i.pravatar.cc/100?img=20","sticker":"танцы"}
+  ],
+  "v3": [
+    {"id":"u5","name":"Саша","photo":"https://i.pravatar.cc/100?img=33","sticker":"спокойный вечер"}
+  ],
+  "v4": [
+    {"id":"u6","name":"Камила","photo":"https://i.pravatar.cc/100?img=15","sticker":"петь"}
+  ],
+  "v5": []
+}

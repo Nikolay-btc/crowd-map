@@ -1,0 +1,7 @@
+﻿[
+  {"id":"v1","name":"Mumiy Troll Music Bar","category":"Бар/музыка","lat":43.1176,"lon":131.8863,"address":"Адмирала Фокина, 12"},
+  {"id":"v2","name":"Cuckoo Club","category":"Клуб","lat":43.1168,"lon":131.8897,"address":"Светланская, 33"},
+  {"id":"v3","name":"Bar Postscriptum","category":"Бар","lat":43.1193,"lon":131.8799,"address":"Семафорная, 3"},
+  {"id":"v4","name":"Cinema Ocean IMAX","category":"Кино","lat":43.1184,"lon":131.8822,"address":"Океанский проспект, 17"},
+  {"id":"v5","name":"Karaoke 7 Sky","category":"Караоке","lat":43.1170,"lon":131.8951,"address":"Суханова, 3"}
+]

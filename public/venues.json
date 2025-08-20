@@ -1,0 +1,67 @@
+﻿{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [131.8863, 43.1176] },
+      "properties": {
+        "id": "v1",
+        "title": "Mumiy Troll Music Bar",
+        "description": "Бар с лайв-музыкой и танцами",
+        "photos": [
+          "https://images.unsplash.com/photo-1519677100203-a0e668c92439?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1543007619-9decb3f6fcfc?q=80&w=1200&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [131.8897, 43.1168] },
+      "properties": {
+        "id": "v2",
+        "title": "Cuckoo Club",
+        "description": "Ночной клуб, электро и хип-хоп",
+        "photos": [
+          "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1200&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1200&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [131.8822, 43.1184] },
+      "properties": {
+        "id": "v3",
+        "title": "Кино Океан IMAX",
+        "description": "Поздние сеансы и попкорн XXL",
+        "photos": [
+          "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1200&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [131.8951, 43.1170] },
+      "properties": {
+        "id": "v4",
+        "title": "Karaoke 7 Sky",
+        "description": "Комнаты, хиты 00-х, вкусные сет-меню",
+        "photos": [
+          "https://images.unsplash.com/photo-1514525253450-39f0e72f0f49?q=80&w=1200&auto=format&fit=crop"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [131.8799, 43.1193] },
+      "properties": {
+        "id": "v5",
+        "title": "Бар Postscriptum",
+        "description": "Коктейли, свечи, поздно до 03:00",
+        "photos": [
+          "https://images.unsplash.com/photo-1551024709-8f23befc6cf7?q=80&w=1200&auto=format&fit=crop"
+        ]
+      }
+    }
+  ]
+}
