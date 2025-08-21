@@ -1,18 +1,16 @@
 ﻿export type ReviewBadge = { id: string; label: string; emoji: string };
 
 export const REVIEW_BADGES: ReviewBadge[] = [
-  { id: "firestarter", label: "Человек-зажигалка", emoji: "🔥" },
-  { id: "right-drink", label: "Пьёт что надо", emoji: "🍻" },
-  { id: "karaoke", label: "Тянет караоке", emoji: "🎤" },
-  { id: "dancefloor", label: "Король танцпола", emoji: "🕺" },
-  { id: "memelord", label: "Мемолог", emoji: "😂" },
-  { id: "dj-soul", label: "DJ души компании", emoji: "🎶" },
-  { id: "organizer", label: "Заводила", emoji: "🎯" },
-  { id: "optimist", label: "Никогда не ноет", emoji: "🥂" },
-  { id: "wingman", label: "Всегда выведет на движ", emoji: "🤝" },
-  { id: "top", label: "Просто топ", emoji: "🌟" }
+  { id: "vibe",        label: "life of the party", emoji: "🔥" },
+  { id: "dance",       label: "dance lover",       emoji: "💃" },
+  { id: "karaoke",     label: "karaoke pro",       emoji: "🎤" },
+  { id: "sociable",    label: "super friendly",    emoji: "🫶" },
+  { id: "organizer",   label: "organizer",         emoji: "📅" },
+  { id: "chill",       label: "chill vibes",       emoji: "🧊" },
+  { id: "funny",       label: "very funny",        emoji: "😄" },
+  { id: "photo",       label: "photogenic",        emoji: "📸" },
+  { id: "polite",      label: "very polite",       emoji: "🙇" },
+  { id: "punctual",    label: "always on time",    emoji: "⏱️" },
 ];
 
-export function findBadge(id: string) {
-  return REVIEW_BADGES.find(b => b.id === id);
-}
+export const findBadge = (id: string) => REVIEW_BADGES.find(b => b.id === id);

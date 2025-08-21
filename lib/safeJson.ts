@@ -1,0 +1,1 @@
+﻿export default async function safeJson<T>(url: string, fallback: T): Promise<T> { try { const res = await fetch(url, { cache: "no-store" }); const text = await res.text(); const clean = text.charCodeAt(0) === 65279 ? text.slice(1) : text; try { return JSON.parse(clean) as T; } catch { return fallback; } } catch { return fallback; } }

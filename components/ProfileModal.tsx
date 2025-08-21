@@ -1,1 +1,77 @@
-﻿import React, { useMemo, useState } from "react";\nimport { REVIEW_BADGES, findBadge } from "@/lib/reviews";\nimport { getStatus, setStatus, getReviewsForUser, addReview, removeReview } from "@/lib/profileStore";\n\nexport type User = { id: string; name: string; photo: string; rating?: number };\n\ntype Props = { user: User | null; onClose: () => void };\n\nexport default function ProfileModal({ user, onClose }: Props) {\n  const [status, setStatusState] = useState(() => (user ? getStatus(user.id) : ""));\n  const reviews = useMemo(() => (user ? getReviewsForUser(user.id) : []), [user]);\n  if (!user) return null;\n\n  const add = (badgeId: string) => { addReview(user.id, badgeId); (document as any).dispatchEvent(new CustomEvent("profile:changed")); };\n  const remove = (badgeId: string) => { removeReview(user.id, badgeId); (document as any).dispatchEvent(new CustomEvent("profile:changed")); };\n  const saveStatus = () => { setStatus(user.id, status); (document as any).dispatchEvent(new CustomEvent("profile:changed")); };\n\n  return (\n    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "grid", placeItems: "center", zIndex: 50 }} onClick={onClose}>\n      <div onClick={(e)=>e.stopPropagation()} style={{ width: 520, maxWidth: "92vw", background: "#fff", borderRadius: 14, padding: 16, boxShadow: "0 24px 60px rgba(0,0,0,.25)" }}>\n        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>\n          <img src={user.photo} alt={user.name} width={64} height={64} style={{ borderRadius: 9999, objectFit: "cover" }} />\n          <div style={{ display: "grid" }}>\n            <strong style={{ fontSize: 18 }}>{user.name}</strong>\n            {typeof user.rating === "number" && (<span style={{ fontSize: 12, opacity: .75 }}>??????? {user.rating.toFixed(1)}</span>)}\n          </div>\n          <button onClick={onClose} style={{ marginLeft: "auto", border: "1px solid #ddd", borderRadius: 8, padding: "6px 10px", cursor: "pointer" }}>???????</button>\n        </div>\n\n        <div style={{ marginTop: 16 }}>\n          <div style={{ fontWeight: 700, marginBottom: 8 }}>??????</div>\n          <div style={{ display: "flex", gap: 8 }}>\n            <input value={status} onChange={e=>setStatusState(e.target.value)} placeholder="????????: ??????? ????? ??????" style={{ flex: 1, border: "1px solid #ddd", borderRadius: 8, padding: "10px" }} />\n            <button onClick={saveStatus} style={{ border: "1px solid #ddd", borderRadius: 8, padding: "10px 12px", cursor: "pointer" }}>?????????</button>\n          </div>\n        </div>\n\n        <div style={{ marginTop: 16 }}>\n          <div style={{ fontWeight: 700, marginBottom: 8 }}>?????? (?????? ??????????)</div>\n          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>\n            {reviews.length === 0 && <div style={{ opacity: .7 }}>???? ??? ??????? ? ???????? ?????? ????.</div>}\n            {reviews.map(id => { const b = findBadge(id); if(!b) return null; return (\n              <span key={id} title={b.label} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #eee", padding: "6px 10px", borderRadius: 9999, background: "#fafafa" }}>\n                <span style={{ fontSize: 16 }}>{b.emoji}</span>\n                <span style={{ fontSize: 13 }}>{b.label}</span>\n                <button onClick={()=>remove(id)} title="??????" style={{ marginLeft: 4, border: "none", background: "transparent", cursor: "pointer", opacity: .6 }}>?</button>\n              </span>\n            ); })}\n          </div>\n        </div>\n\n        <div style={{ marginTop: 16 }}>\n          <div style={{ fontWeight: 700, marginBottom: 8 }}>???????? ?????</div>\n          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>\n            {REVIEW_BADGES.map(b => (\n              <button key={b.id} onClick={()=>add(b.id)} style={{ border: "1px solid #ddd", borderRadius: 9999, padding: "6px 10px", cursor: "pointer", background: "white" }}>\n                <span style={{ fontSize: 16, marginRight: 6 }}>{b.emoji}</span>{b.label}\n              </button>\n            ))}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n
+﻿"use client";
+import React, { useEffect, useState } from "react";
+import { REVIEW_BADGES } from "../lib/reviews";
+import { getReviewsForUser, addReview, removeReview, getStatusForUser, setStatusForUser } from "../lib/profileStore";
+
+export type User = { id: string; name: string; photo: string; rating?: number };
+
+export default function ProfileModal({ user, onClose }: { user: User; onClose: () => void }) {
+  const [reviews, setReviews] = useState<string[]>([]);
+  const [status, setStatus] = useState<string>("");
+
+  useEffect(() => {
+    const sync = () => {
+      setReviews(getReviewsForUser(user.id));
+      setStatus(getStatusForUser(user.id));
+    };
+    sync();
+    const h = () => sync();
+    document.addEventListener("profile:changed", h);
+    return () => document.removeEventListener("profile:changed", h);
+  }, [user.id]);
+
+  const toggle = (id: string) => {
+    if (reviews.includes(id)) removeReview(user.id, id);
+    else addReview(user.id, id);
+  };
+
+  return (
+    <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,.5)", display:"grid", placeItems:"center", zIndex:1000 }}>
+      <div style={{ background:"#fff", width:640, maxWidth:"90vw", borderRadius:12, boxShadow:"0 20px 50px rgba(0,0,0,.2)", overflow:"hidden" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"12px 16px", borderBottom:"1px solid #eee" }}>
+          <div style={{ fontWeight:700 }}>Profile</div>
+          <button onClick={onClose} style={{ border:"1px solid #ddd", borderRadius:8, padding:"6px 10px", cursor:"pointer" }}>Close</button>
+        </div>
+
+        <div style={{ padding:16 }}>
+          <img src={user.photo} alt={user.name} style={{ width:"100%", height:220, objectFit:"cover", borderRadius:8 }} />
+          <div style={{ marginTop:12, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ fontSize:20, fontWeight:700 }}>{user.name}</div>
+            {typeof user.rating === "number" && <div style={{ opacity:.7 }}>{user.rating.toFixed(1)}★</div>}
+          </div>
+
+          <div style={{ marginTop:12 }}>
+            <div style={{ fontSize:12, opacity:.7, marginBottom:6 }}>Status (tonight)</div>
+            <input
+              value={status}
+              placeholder="e.g. open to meet, just dancing…"
+              onChange={e => { setStatus(e.target.value); setStatusForUser(user.id, e.target.value); }}
+              style={{ width:"100%", border:"1px solid #ddd", borderRadius:8, padding:"10px 12px" }}
+            />
+          </div>
+
+          <div style={{ marginTop:12 }}>
+            <div style={{ fontSize:12, opacity:.7, marginBottom:6 }}>Positive badges</div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:8 }}>
+              {REVIEW_BADGES.map(b => {
+                const active = reviews.includes(b.id);
+                return (
+                  <button key={b.id}
+                    onClick={() => toggle(b.id)}
+                    style={{
+                      border: active ? "1px solid #222" : "1px solid #ddd",
+                      background: active ? "#222" : "#fff",
+                      color: active ? "#fff" : "#222",
+                      borderRadius:999, padding:"8px 12px", cursor:"pointer"
+                    }}>
+                    <span style={{ marginRight:6 }}>{b.emoji}</span>{b.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

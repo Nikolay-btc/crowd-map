@@ -1,53 +1,39 @@
 ﻿const STATUS_KEY = "status:v1";
 const REVIEWS_KEY = "reviews:v1";
 
-export type StatusMap = Record<string, string>;     // userId -> короткий статус
-export type ReviewsMap = Record<string, string[]>;  // targetUserId -> [badgeId,...]
+export type StatusMap = Record<string, string>;
+export type ReviewsMap = Record<string, string[]>;
 
-function read<T>(k: string, fallback: T): T {
-  if (typeof window === "undefined") return fallback;
+const readJson = <T>(k: string, fallback: T): T => {
   try {
-    const raw = localStorage.getItem(k);
-    return raw ? (JSON.parse(raw) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
+    const txt = localStorage.getItem(k);
+    if (!txt) return fallback;
+    return JSON.parse(txt) as T;
+  } catch { return fallback; }
+};
 
-function write<T>(k: string, v: T) {
-  if (typeof window === "undefined") return;
-  try { localStorage.setItem(k, JSON.stringify(v)); } catch {}
-}
+const writeJson = (k: string, v: any) => localStorage.setItem(k, JSON.stringify(v));
 
-// STATUS
-export function getStatus(userId: string): string {
-  const map = read<StatusMap>(STATUS_KEY, {});
-  return map[userId] || "";
-}
+export const getStatusForUser = (id: string) => readJson<StatusMap>(STATUS_KEY, {})[id] ?? "";
+export const setStatusForUser = (id: string, status: string) => {
+  const map = readJson<StatusMap>(STATUS_KEY, {});
+  map[id] = status;
+  writeJson(STATUS_KEY, map);
+  document.dispatchEvent(new Event("profile:changed"));
+};
 
-export function setStatus(userId: string, status: string) {
-  const map = read<StatusMap>(STATUS_KEY, {});
-  map[userId] = (status || "").slice(0, 100);
-  write(STATUS_KEY, map);
-}
-
-// REVIEWS (только позитивные бейджи)
-export function getReviewsForUser(targetUserId: string): string[] {
-  const map = read<ReviewsMap>(REVIEWS_KEY, {});
-  return map[targetUserId] || [];
-}
-
-export function addReview(targetUserId: string, badgeId: string) {
-  const map = read<ReviewsMap>(REVIEWS_KEY, {});
-  const arr = map[targetUserId] || [];
+export const getReviewsForUser = (id: string) => readJson<ReviewsMap>(REVIEWS_KEY, {})[id] ?? [];
+export const addReview = (id: string, badgeId: string) => {
+  const map = readJson<ReviewsMap>(REVIEWS_KEY, {});
+  const arr = map[id] ?? [];
   if (!arr.includes(badgeId)) arr.push(badgeId);
-  map[targetUserId] = arr;
-  write(REVIEWS_KEY, map);
-}
-
-export function removeReview(targetUserId: string, badgeId: string) {
-  const map = read<ReviewsMap>(REVIEWS_KEY, {});
-  const arr = (map[targetUserId] || []).filter(x => x !== badgeId);
-  map[targetUserId] = arr;
-  write(REVIEWS_KEY, map);
-}
+  map[id] = arr;
+  writeJson(REVIEWS_KEY, map);
+  document.dispatchEvent(new Event("profile:changed"));
+};
+export const removeReview = (id: string, badgeId: string) => {
+  const map = readJson<ReviewsMap>(REVIEWS_KEY, {});
+  map[id] = (map[id] ?? []).filter(x => x !== badgeId);
+  writeJson(REVIEWS_KEY, map);
+  document.dispatchEvent(new Event("profile:changed"));
+};

@@ -1,0 +1,35 @@
+﻿"use client";
+import React, { useEffect, useMemo, useState } from "react";
+import ProfileModal, { User } from "../../components/ProfileModal";
+import safeJson from "../../lib/safeJson";
+export default function ProfilesPage(){
+  const [users, setUsers] = useState<User[]>([]);
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<User|null>(null);
+  const filtered = useMemo(()=>{ const q = query.trim().toLowerCase(); if(!q) return users; return users.filter(u => u.name.toLowerCase().includes(q)); }, [users, query]);
+  useEffect(() => { (async () => { const data = await safeJson<{users:any[]}>("/users.json", {users: []}); const mapped: User[] = (data.users||[]).map((u:any)=>({ id:u.id, name:u.name, photo:u.photo, rating:u.rating })); setUsers(mapped); })(); }, []);
+  return (
+    <main style={{ display: "grid", gridTemplateRows: "auto 1fr", height: "100vh" }}>
+      <header style={{ padding: 12, borderBottom: "1px solid #eee", display: "flex", gap: 8, alignItems: "center" }}>
+        <strong style={{ fontSize: 18 }}>??????? (????)</strong>
+        <input placeholder="????? ?? ?????" value={query} onChange={e=>setQuery(e.target.value)} style={{ marginLeft: "auto", border: "1px solid #ddd", borderRadius: 8, padding: "8px 10px", width: 280 }} />
+      </header>
+      <section style={{ padding: 16, overflow: "auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
+          {filtered.map(u => (
+            <div key={u.id} style={{ border: "1px solid #eee", borderRadius: 12, padding: 12, display: "grid", gap: 8 }}>
+              <img src={u.photo} alt={u.name} width={160} height={160} style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 10, cursor: "pointer" }} onClick={()=>setSelected(u)} />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div style={{ fontWeight: 700 }}>{u.name}</div>
+                {typeof u.rating === "number" && <span style={{ fontSize: 12, opacity: .7 }}>{u.rating.toFixed(1)}</span>}
+              </div>
+              <button onClick={()=>setSelected(u)} style={{ border: "1px solid #ddd", borderRadius: 8, padding: "8px 10px", cursor: "pointer", background: "white" }}>??????? ???????</button>
+            </div>
+          ))}
+          {filtered.length === 0 && (<div style={{ opacity: .7 }}>?????? ?? ?????.</div>)}
+        </div>
+      </section>
+      {selected && <ProfileModal user={selected} onClose={()=>setSelected(null)} />}
+    </main>
+  );
+}
